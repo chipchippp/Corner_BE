@@ -11,10 +11,17 @@ spring:
       maximum-pool-size: 10
       minimum-idle: 2
       auto-commit: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      fail-on-numbers-for-enums: true
+      fail-on-invalid-subtype: true
+      fail-on-null-for-primitives: true
+      fail-on-trailing-tokens: true
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     open-in-view: false
 

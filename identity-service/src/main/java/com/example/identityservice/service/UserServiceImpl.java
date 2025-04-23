@@ -2,7 +2,9 @@ package com.example.identityservice.service;
 
 import com.example.identityservice.dto.request.UserCreateRequest;
 import com.example.identityservice.dto.request.UserUpdateRequest;
-import com.example.identityservice.exception.ResourceNotFoundException;
+import com.example.identityservice.dto.response.UserDetailResponse;
+import com.example.identityservice.exception.*;
+import com.example.identityservice.mapper.UserMapper;
 import com.example.identityservice.model.User;
 import com.example.identityservice.repository.UserRepository;
 import com.example.identityservice.service.impl.UserService;
@@ -20,16 +22,17 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
     UserRepository userRepository;
+//    UserMapper userMapper;
 
     @Override
-    public User save(UserCreateRequest request) {
+    public long save(UserCreateRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             log.error("User with username {} already exists", request.getUsername());
-            throw new RuntimeException(request.getUsername() + " already exists");
+            throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
         }
         if (userRepository.existsByEmail(request.getEmail())) {
             log.error("User with email {} already exists", request.getEmail());
-            throw new RuntimeException(request.getEmail() + " already exists");
+            throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
         User user = User.builder()
                 .firstName(request.getFirstName())
@@ -44,14 +47,24 @@ public class UserServiceImpl implements UserService {
                 .build();
         userRepository.save(user);
         log.info("User with username {} created", user.getUsername());
-        return user;
+        return user.getId();
     }
 
     @Override
-    public User findById(Long id) {
+    public UserDetailResponse findById(Long id) {
         User user = getUserById(id);
         log.info("User with id {} found", id);
-        return user;
+        return UserDetailResponse
+                .builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .gender(user.getGender())
+                .status(user.getStatus())
+                .build();
     }
 
     @Override
@@ -68,6 +81,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(Long id, UserUpdateRequest request) {
         User user = getUserById(id);
+
+        // Check nếu username mới đã tồn tại và không phải là của user hiện tại
+        if (!user.getUsername().equals(request.getUsername()) &&
+                userRepository.existsByUsername(request.getUsername())) {
+            log.error("Username {} already exists", request.getUsername());
+            throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
+        }
+
+        // Check nếu email mới đã tồn tại và không phải là của user hiện tại
+        if (!user.getEmail().equals(request.getEmail()) &&
+                userRepository.existsByEmail(request.getEmail())) {
+            log.error("Email {} already exists", request.getEmail());
+            throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+
+        // Cập nhật thông tin mới
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
@@ -76,8 +105,9 @@ public class UserServiceImpl implements UserService {
         user.setDob(request.getDob());
         user.setGender(request.getGender());
         user.setStatus(request.getStatus());
+
         userRepository.save(user);
-        log.info("User with id {} updated", id);
+        log.info("User with id {} updated successfully", id);
         return user;
     }
 
@@ -89,6 +119,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private User getUserById(long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 }

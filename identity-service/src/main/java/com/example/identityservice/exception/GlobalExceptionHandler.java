@@ -1,5 +1,6 @@
 package com.example.identityservice.exception;
 
+import com.example.identityservice.dto.response.ApiResponse;
 import com.example.identityservice.dto.response.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,21 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({RuntimeException.class, ResourceNotFoundException.class})
-    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<ApiResponse> handleRuntimeException(AppException e) {
+        ApiResponse response = new ApiResponse();
+        response.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
+        response.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler({AppException.class})
+    public ResponseEntity<ApiResponse> handleAppException(AppException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        ApiResponse response = new ApiResponse();
+        response.setCode(errorCode.getCode());
+        response.setMessage(errorCode.getMessage());
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
