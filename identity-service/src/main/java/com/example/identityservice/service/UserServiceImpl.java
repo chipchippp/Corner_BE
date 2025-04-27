@@ -22,7 +22,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
     UserRepository userRepository;
-//    UserMapper userMapper;
+    UserMapper userMapper;
 
     @Override
     public long save(UserCreateRequest request) {
@@ -34,17 +34,7 @@ public class UserServiceImpl implements UserService {
             log.error("User with email {} already exists", request.getEmail());
             throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
-        User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .phone(request.getPhone())
-                .email(request.getEmail())
-                .username(request.getUsername())
-                .password(request.getPassword())
-                .dob(request.getDob())
-                .gender(request.getGender())
-                .status(request.getStatus())
-                .build();
+        User user = userMapper.toUser(request);
         userRepository.save(user);
         log.info("User with username {} created", user.getUsername());
         return user.getId();
@@ -52,19 +42,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailResponse findById(Long id) {
-        User user = getUserById(id);
+        UserDetailResponse userResponse = userMapper.toUserDetailResponse(getUserById(id));
+        if (userResponse == null) {
+            log.error("User with id {} not found", id);
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
         log.info("User with id {} found", id);
-        return UserDetailResponse
-                .builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .gender(user.getGender())
-                .status(user.getStatus())
-                .build();
+        return userResponse;
     }
 
     @Override
@@ -96,15 +80,7 @@ public class UserServiceImpl implements UserService {
             throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
 
-        // Cập nhật thông tin mới
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
-        user.setDob(request.getDob());
-        user.setGender(request.getGender());
-        user.setStatus(request.getStatus());
+        userMapper.updateUser(request, user);
 
         userRepository.save(user);
         log.info("User with id {} updated successfully", id);

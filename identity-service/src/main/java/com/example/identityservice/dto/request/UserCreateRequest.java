@@ -1,7 +1,6 @@
 package com.example.identityservice.dto.request;
 
 import com.example.identityservice.dto.validator.*;
-import com.example.identityservice.exception.ErrorCode;
 import com.example.identityservice.util.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
@@ -28,7 +27,7 @@ public class UserCreateRequest {
     String phone;
 
     @NotNull(message = "Username must not be null")
-    @Size(min = 6, max = 20, message = "USERNAME_INVALID")
+    @Size(min = 3, max = 20, message = "USERNAME_INVALID")
     String username;
 
     @Size(min = 6, message = "Password must be at least 6 characters")
