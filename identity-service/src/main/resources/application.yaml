@@ -27,3 +27,6 @@ spring:
 
   main:
     banner-mode: off
+
+jwt:
+  signerKey: "55JYJ2DCorJgoTvGpvS8ShO7b69xv2HUaT/fDr0aioKecfJ6C5dAazZjNJiZ07yU"

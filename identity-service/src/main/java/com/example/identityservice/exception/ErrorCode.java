@@ -15,7 +15,9 @@ public enum ErrorCode {
     PASSWORD_MISMATCH(1012, "Password mismatch"),
     USER_NOT_ACTIVE(1013, "User is not active"),
     USERNAME_INVALID(1014, "Username is invalid"),
-    USERNAME_NOT_EXISTS(1015, "Username not exists"),;
+    USERNAME_NOT_EXISTS(1015, "Username not exists"),
+    UNAUTHORIZED(1016, "Unauthorized"),
+    UNAUTHENTICATED(1017, "Unauthenticated"),;
 
     private final int code;
     private final String message;
