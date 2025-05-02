@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
     UserRepository userRepository;
 
     @NonFinal
-    @Value("${jwt.signer.key}")
+    @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
 
     @Override
