@@ -6,9 +6,12 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.util.Set;
+
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDetailResponse implements Serializable {
     Long id;
@@ -19,4 +22,5 @@ public class UserDetailResponse implements Serializable {
     String phone;
     Gender gender;
     UserStatus status;
+    Set<String> roles;
 }

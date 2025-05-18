@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserService {
     long save(UserCreateRequest request);
     UserDetailResponse findById(Long id);
-    List<User> getAll();
+    List<UserDetailResponse> getAll();
     User update(Long id, UserUpdateRequest request);
     void delete(Long id);
 }

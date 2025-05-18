@@ -6,6 +6,7 @@ import com.example.identityservice.dto.response.AuthResponse;
 import com.example.identityservice.dto.response.IntrospectResponse;
 import com.example.identityservice.exception.AppException;
 import com.example.identityservice.exception.ErrorCode;
+import com.example.identityservice.model.User;
 import com.example.identityservice.repository.UserRepository;
 import com.example.identityservice.service.impl.AuthService;
 import com.nimbusds.jose.*;
@@ -23,11 +24,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
@@ -50,16 +54,16 @@ public class AuthServiceImpl implements AuthService {
         if (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        var token = generateToken(request.getUsername());
+        var token = generateToken(user);
         return AuthResponse.builder()
-                .token(token)
+                .accessToken(token)
                 .authenticated(authenticated)
                 .build();
     }
 
     @Override
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
-        var token = request.getToken();
+        var token = request.getAccessToken();
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
 
@@ -70,10 +74,10 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    private String generateToken(String username){
+    private String generateToken(User user){
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUsername())
                 .issuer("nvl.com")
                 .issueTime(new Date())
 //                .expirationTime(new Date(new Date().getTime() + 60 * 60 * 1000)) // 1 hour
@@ -81,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
                         new Date(Instant.now().
                                 plus(1, ChronoUnit.HOURS)
                                 .toEpochMilli())) // 1 hour
-                .claim("customClaim", "Custom")
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -93,5 +97,12 @@ public class AuthServiceImpl implements AuthService {
             log.error("Error signing JWT", e);
             throw new RuntimeException(e);
         }
+    }
+    private String buildScope(User user) {
+        StringJoiner joiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
+            user.getRoles().forEach(joiner::add);
+        }
+        return joiner.toString();
     }
 }

@@ -3,53 +3,56 @@ package com.example.identityservice.model;
 import com.example.identityservice.dto.validator.Gender;
 import com.example.identityservice.util.UserStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "tbl_user")
 public class User extends AbstractEntity<Long> {
 
     // Thông tin định danh
     @Column(name = "username", nullable = false, unique = true)
-    private String username;
+    String username;
 
     @Column(name = "password", nullable = false)
-    private String password;
+    String password;
 
     @Column(name = "email", unique = true)
-    private String email;
+    String email;
 
     @Column(name = "phone")
-    private String phone;
+    String phone;
 
     // Thông tin cá nhân
     @Column(name = "first_name")
-    private String firstName;
+    String firstName;
 
     @Column(name = "last_name")
-    private String lastName;
+    String lastName;
 
     @Column(name = "dob")
-    private LocalDate dob;
+    LocalDate dob;
 
     @Enumerated(EnumType.STRING)
-//    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "gender")
-    private Gender gender;
+    Gender gender;
 
     // Trạng thái hệ thống
     @Enumerated(EnumType.STRING)
-//    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status")
-    private UserStatus status;
+    UserStatus status;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    Set<String> roles;
 }

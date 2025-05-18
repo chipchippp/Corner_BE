@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,8 +52,11 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<User> getAllUsers() {
-        return userService.getAll();
+    public ApiResponse<List<UserDetailResponse>> getAllUsers() {
+        return ApiResponse.<List<UserDetailResponse>>builder()
+                .data(userService.getAll())
+                .message(Translator.toLocale("user.list.success"))
+                .build();
     }
 
     @PutMapping("/{id}")

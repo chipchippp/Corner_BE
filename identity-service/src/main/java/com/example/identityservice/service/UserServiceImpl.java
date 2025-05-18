@@ -8,14 +8,15 @@ import com.example.identityservice.mapper.UserMapper;
 import com.example.identityservice.model.User;
 import com.example.identityservice.repository.UserRepository;
 import com.example.identityservice.service.impl.UserService;
+import com.example.identityservice.util.Role;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +26,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     @Override
     public long save(UserCreateRequest request) {
@@ -37,8 +39,11 @@ public class UserServiceImpl implements UserService {
             throw new AppException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
         User user = userMapper.toUser(request);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
         userRepository.save(user);
         log.info("User with username {} created", user.getUsername());
         return user.getId();
@@ -56,14 +61,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        List<User> users = userRepository.findAll();
-        if (users.isEmpty()) {
-            log.info("No users found");
-        } else {
-            log.info("Found {} users", users.size());
-        }
-        return users;
+    public List<UserDetailResponse> getAll() {
+        return userRepository.findAll().stream().map(userMapper::toUserDetailResponse).toList();
     }
 
     @Override

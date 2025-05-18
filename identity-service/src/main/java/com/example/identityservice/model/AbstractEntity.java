@@ -1,5 +1,6 @@
 package com.example.identityservice.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @MappedSuperclass
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractEntity<T extends Serializable> implements Serializable {
 
     @Id
