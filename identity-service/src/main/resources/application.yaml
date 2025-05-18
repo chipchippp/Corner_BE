@@ -28,5 +28,8 @@ spring:
   main:
     banner-mode: off
 
+logging:
+  level:
+    root: warn
 jwt:
   signerKey: "55JYJ2DCorJgoTvGpvS8ShO7b69xv2HUaT/fDr0aioKecfJ6C5dAazZjNJiZ07yU"

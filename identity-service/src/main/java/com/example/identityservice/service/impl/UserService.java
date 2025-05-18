@@ -8,6 +8,7 @@ import com.example.identityservice.model.User;
 import java.util.List;
 
 public interface UserService {
+    UserDetailResponse myProfile();
     long save(UserCreateRequest request);
     UserDetailResponse findById(Long id);
     List<UserDetailResponse> getAll();

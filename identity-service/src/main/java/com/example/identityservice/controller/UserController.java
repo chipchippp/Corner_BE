@@ -59,6 +59,15 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/myProfile")
+    public ApiResponse<UserDetailResponse> getMyProfile() {
+        log.info("Get My Profile");
+        return ApiResponse.<UserDetailResponse>builder()
+                .data(userService.myProfile())
+                .message("My Profile")
+                .build();
+    }
+
     @PutMapping("/{id}")
     public ApiResponse<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
         log.info("Update User by id = {} ", id);

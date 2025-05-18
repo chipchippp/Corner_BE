@@ -31,6 +31,7 @@ public class AuthController {
         log.info("User {} authenticated: {}", request.getUsername(), result);
         return ApiResponse.<AuthResponse>builder()
                 .data(result)
+                .message("User authenticated successfully")
                 .build();
     }
 
@@ -39,6 +40,7 @@ public class AuthController {
         var result = authService.introspect(request);
         return ApiResponse.<IntrospectResponse>builder()
                 .data(result)
+                .message("Token introspected successfully")
                 .build();
     }
 }

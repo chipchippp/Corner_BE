@@ -13,6 +13,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,17 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
 
     @Override
+    public UserDetailResponse myProfile() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_EXISTS));
+        return userMapper.toUserDetailResponse(user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public long save(UserCreateRequest request) {
+        log.info("Creating user with username {}", request.getUsername());
         if (userRepository.existsByUsername(request.getUsername())) {
             log.error("User with username {} already exists", request.getUsername());
             throw new AppException(ErrorCode.USERNAME_ALREADY_EXISTS);
@@ -49,6 +61,7 @@ public class UserServiceImpl implements UserService {
         return user.getId();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public UserDetailResponse findById(Long id) {
         UserDetailResponse userResponse = userMapper.toUserDetailResponse(getUserById(id));

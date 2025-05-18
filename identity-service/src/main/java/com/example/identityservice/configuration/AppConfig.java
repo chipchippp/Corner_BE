@@ -8,6 +8,7 @@ import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,6 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableMethodSecurity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AppConfig {
 //    @Lazy
@@ -40,8 +42,6 @@ public class AppConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(WHITE_LIST).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/user/")
-                        .hasRole(Role.ADMIN.name()) // Các API `/api/v1/user/**` với phương thức GET cần có quyền ADMIN
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwtConfigurer -> jwtConfigurer
