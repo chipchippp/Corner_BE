@@ -22,7 +22,14 @@ public enum ErrorCode {
     USERNAME_INVALID(1014, "Username is invalid", HttpStatus.BAD_REQUEST),
     USERNAME_NOT_EXISTS(1015, "Username not exists", HttpStatus.BAD_REQUEST),
     UNAUTHORIZED(1016, "You do not have permission", HttpStatus.FORBIDDEN),
-    UNAUTHENTICATED(1017, "Unauthenticated", HttpStatus.UNAUTHORIZED),;
+    UNAUTHENTICATED(1017, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    PERMISSION_NOT_FOUND(1018, "Permission not found", HttpStatus.NOT_FOUND),
+    PERMISSION_NAME_ALREADY_EXISTS(1019, "Permission name already exists", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_FOUND(1020, "Role not found", HttpStatus.NOT_FOUND),
+    ROLE_NAME_ALREADY_EXISTS(1021, "Role name already exists", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_ACTIVE(1022, "Role is not active", HttpStatus.FORBIDDEN),
+    CANNOT_DELETE_ADMIN_ROLE(1023, "Cannot delete admin role", HttpStatus.FORBIDDEN),
+    ;
 
     private final int code;
     private final String message;

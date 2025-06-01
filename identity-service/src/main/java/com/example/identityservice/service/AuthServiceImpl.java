@@ -1,11 +1,8 @@
 package com.example.identityservice.service;
 
-import com.example.identityservice.dto.request.AuthRequest;
-import com.example.identityservice.dto.request.IntrospectRequest;
-import com.example.identityservice.dto.response.AuthResponse;
-import com.example.identityservice.dto.response.IntrospectResponse;
-import com.example.identityservice.exception.AppException;
-import com.example.identityservice.exception.ErrorCode;
+import com.example.identityservice.dto.request.*;
+import com.example.identityservice.dto.response.*;
+import com.example.identityservice.exception.*;
 import com.example.identityservice.model.User;
 import com.example.identityservice.repository.UserRepository;
 import com.example.identityservice.service.impl.AuthService;
@@ -24,12 +21,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.Date;
 import java.util.StringJoiner;
 
@@ -100,9 +94,9 @@ public class AuthServiceImpl implements AuthService {
     }
     private String buildScope(User user) {
         StringJoiner joiner = new StringJoiner(" ");
-        if (!CollectionUtils.isEmpty(user.getRoles())) {
-            user.getRoles().forEach(joiner::add);
-        }
+//        if (!CollectionUtils.isEmpty(user.getRoles())) {
+//            user.getRoles().forEach(joiner::add);
+//        }
         return joiner.toString();
     }
 }

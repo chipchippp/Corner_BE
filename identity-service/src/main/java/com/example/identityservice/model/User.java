@@ -51,8 +51,6 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "status")
     UserStatus status;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
-    Set<String> roles;
+    @ManyToMany
+    Set<Role> roles;
 }

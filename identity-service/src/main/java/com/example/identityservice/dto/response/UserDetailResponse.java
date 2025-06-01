@@ -22,5 +22,5 @@ public class UserDetailResponse implements Serializable {
     String phone;
     Gender gender;
     UserStatus status;
-    Set<String> roles;
+    Set<RoleResponse> roles;
 }

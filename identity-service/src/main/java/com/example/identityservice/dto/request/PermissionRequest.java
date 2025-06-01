@@ -1,6 +1,5 @@
 package com.example.identityservice.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class IntrospectRequest {
-    @JsonProperty("token")
-    String accessToken;
+public class PermissionRequest {
+    String name;
+    String description;
 }

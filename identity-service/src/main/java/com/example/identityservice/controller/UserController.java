@@ -4,7 +4,6 @@ import com.example.identityservice.configuration.Translator;
 import com.example.identityservice.dto.request.*;
 import com.example.identityservice.dto.response.*;
 import com.example.identityservice.exception.ResourceNotFoundException;
-import com.example.identityservice.model.User;
 import com.example.identityservice.service.impl.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
