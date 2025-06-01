@@ -106,7 +106,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private Role findRoleById(int id) {
-        return roleRepository.findById(id)
+        return roleRepository.findByIdFetchPermissions(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
     }
 
