@@ -2,12 +2,10 @@ package com.example.identityservice.dto.request;
 
 import com.example.identityservice.dto.validator.*;
 import com.example.identityservice.util.UserStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -34,9 +32,10 @@ public class UserCreateRequest {
     @NotNull(message = "Password must not be null")
     String password;
 
-    @NotNull(message = "Date of birth must not be null")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "dd/MM/yyyy")
+//    @NotNull(message = "Date of birth must not be null")
+//    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+//    @JsonFormat(pattern = "dd/MM/yyyy")
+    @DobConstraint(min = 18, message = "INVALID_DOB")
     LocalDate dob;
 
     @GenderSubset(anyOf = {MALE, FEMALE, OTHER})

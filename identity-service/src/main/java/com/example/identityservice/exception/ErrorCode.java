@@ -29,6 +29,7 @@ public enum ErrorCode {
     ROLE_NAME_ALREADY_EXISTS(1021, "Role name already exists", HttpStatus.BAD_REQUEST),
     ROLE_NOT_ACTIVE(1022, "Role is not active", HttpStatus.FORBIDDEN),
     CANNOT_DELETE_ADMIN_ROLE(1023, "Cannot delete admin role", HttpStatus.FORBIDDEN),
+    INVALID_DOB(1024, "Date of birth is invalid", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;

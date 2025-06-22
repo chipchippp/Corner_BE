@@ -1,5 +1,6 @@
 package com.example.identityservice.dto.request;
 
+import com.example.identityservice.dto.validator.DobConstraint;
 import com.example.identityservice.dto.validator.EnumPattern;
 import com.example.identityservice.dto.validator.Gender;
 import com.example.identityservice.dto.validator.GenderSubset;
@@ -34,9 +35,7 @@ public class UserUpdateRequest {
     @NotNull(message = "Password must not be null")
     String password;
 
-    @NotNull(message = "Date of birth must not be null")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @DobConstraint(min = 18, message = "INVALID_DOB")
     LocalDate dob;
 
     @GenderSubset(anyOf = {MALE, FEMALE, OTHER})
